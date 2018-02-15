@@ -1,0 +1,26 @@
+.left {
+    position: absolute;
+    left: 0px;
+    padding: 10px;
+}
+.center {
+    width: 50%;
+    padding: 16px;
+    margin: auto;
+    align-content: center;
+    text-align: center;
+}
+.label {
+    margin-right:10px;
+ }
+.inner-div
+{
+     margin: 0 auto;
+     text-align: left;
+}
+
+.checkmark {
+    height: 25px;
+    width: 25px;
+    background-color: #2196F3;
+}
