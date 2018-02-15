@@ -101,7 +101,6 @@ class Owner extends Component {
     return (
       <div className='Owner'>
         <br />
-        <h1>Owner Screen</h1>
         <br />
         <div className='divContainer'>
           <div>
@@ -111,8 +110,6 @@ class Owner extends Component {
           <br />
           {containerTag}
         </div>  
-
-
       </div>
     );
   }

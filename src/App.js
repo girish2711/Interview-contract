@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { HashRouter as Router, Route } from 'react-router-dom';
 import TalioInterviewContract from '../build/contracts/Talio.json'
+import Owner from './Owner/Owner.js'
 import getWeb3 from './utils/getWeb3'
 
 import './css/oswald.css'
@@ -14,13 +14,16 @@ class App extends Component {
 
     this.state = {
       storageValue: 0,
-      web3: null
+      web3: null,
+      isHomePageForAll : true,
+      isOwnerPage : false,
+      isCandidatePage : false,
+      isInterviewerPage : false
     }
+
   }
 
   componentWillMount() {
-    // Get network provider and web3 instance.
-    // See utils/getWeb3 for more info.
 
     getWeb3
     .then(results => {
@@ -62,7 +65,7 @@ class App extends Component {
     })
   }
 
-
+ 
   handleOwnerClick = (e) => {
     e.preventDefault();
 
@@ -76,7 +79,6 @@ class App extends Component {
             TalioInterview.deployed().then((instance) => {
               return instance.isTalioOwner.call(accounts[0])
             }).then((result) => {
-              this.context.router.push(`./Owner/Owner.js`);
               return this.setState({ storageValue: result.c[0] })
             })
           })
@@ -88,7 +90,11 @@ class App extends Component {
 
   handleCandidateClick = (e) => {
     e.preventDefault();
-    Router.push(`./Owner`);
+    this.setState( {isHomePageForAll:false}, function(){
+      this.setState({isOwnerPage : true}, function() {
+
+      })
+    });
     //this.context.router.push(`/owner`);
   }
 
@@ -100,31 +106,32 @@ class App extends Component {
   }
 
   render() {
-    return (
-      <div className="App">
-        <nav className="navbar pure-menu pure-menu-horizontal">
-            <a href="#" className="pure-menu-heading pure-menu-link">Talio hiring DApp</a>
-        </nav>
-
-        <main className="container">
-          <div className="pure-g">
-            <div className="pure-u-1-1">
-              <h1>Smart contract example based on ethereum testnetwork!</h1>
-              <h2>Current open posisitions are <strong>: {this.state.storageValue}</strong></h2>
-              <br></br>
-              <br></br>
+    var homePageComp = (
+      <div>
               <button className='buttonStyle'
                   onClick={this.handleOwnerClick}>Manager</button>
               <button className='buttonStyle'
                   onClick={this.handleCandidateClick}>Candidate</button>
               <button className='buttonStyle'
                 onClick={this.handleInterviewerClick}>Interviewer</button>
-            </div>
-          </div>
-        </main>
+       </div>
+    );
+
+    return (
+      <div>
+        { this.state.isHomePageForAll ? homePageComp : null }
+        { this.state.isOwnerPage ? this.renderOwnerPage() : null }
       </div>
     );
   }
+
+
+
+  renderOwnerPage() {
+    return (<Owner/>);
+  }
+
+
 }
 
 
