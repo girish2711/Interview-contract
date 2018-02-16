@@ -5,30 +5,34 @@ import './Owner.css';
 class Owner extends Component {
 
   state = {
-    showOpen: true,
-    items: [
-      'Software Engineer',
-      'Senior Software Engineer',
-      'Module Lead',
-      'Tech Lead',
-      'Senior Tech Lead'
+    jobtypes: [
+      'iOS Software Engineer',
+      'Android Software Engineer',
+      'Java Lead position',
+      'Blockchain Architect',
     ],
-    jobTitel:'',
-    jobDesc:''
+    jobTitel: '',
+    jobDesc: '',
+    selectedOption: 'create'
+  }
+
+  getInitialState = function () {
+    return {
+      selectedOption: 'create'
+    };
   }
 
   componentWillMount = () => {
     this.selectedCheckboxes = new Set();
   }
 
-  handleOpenBtnClick = (e) => {
-    e.preventDefault();
-    this.setState({ showOpen: true })
-  }
 
-  handleCloseBtnClick = (e) => {
-    e.preventDefault();
-    this.setState({ showOpen: false })
+
+  handleOptionChange = (e) => {
+    this.setState({
+      selectedOption: e.target.value
+    });
+
   }
 
   toggleCheckboxChange = (event) => {
@@ -41,11 +45,11 @@ class Owner extends Component {
   }
 
   handleJobDescriptionChanges = (event) => {
-    this.setState({jobDesc:event.target.value})
+    this.setState({ jobDesc: event.target.value })
   }
 
   handleJobTitleChanges = (event) => {
-    this.setState({jobTitel:event.target.value})
+    this.setState({ jobTitel: event.target.value })
   }
 
 
@@ -64,20 +68,24 @@ class Owner extends Component {
 
   render() {
     let containerTag = null;
-    if (this.state.showOpen) {
+    if (this.state.selectedOption == 'create') {
       containerTag = (
-        <div>
-          <input className='textBox' type="text" placeholder='Job Title' onChange={this.handleJobTitleChanges}/>
-          <br />
-          <br />
-          <textarea className='textBox' rows="4" cols="50" placeholder='Job Description' onChange={this.handleJobDescriptionChanges}/>
-          <br />
-          <br />
-          <button  className='buttonStyle' onClick={this.handleSubmitClick}>Submit</button>
-
-        </div>
+        
+          <div className='inner-div'>
+            {this.state.jobtypes.map((item, index) => {
+              return (
+                <Title
+                  name={item}
+                  changed={this.toggleCheckboxChange}
+                  key={item} />
+              )
+            })}
+            </div>
       );
-    } else {
+    } else if (this.state.selectedOption == 'add') {
+
+
+    } else { // Close section
 
       containerTag = (
         <div className='inner-div'>
@@ -104,12 +112,35 @@ class Owner extends Component {
         <br />
         <div className='divContainer'>
           <div>
-            <button  className='buttonStyle' onClick={this.handleOpenBtnClick}>Open</button>
-            <button  className='buttonStyle' onClick={this.handleCloseBtnClick}>Close</button>
+            <div className="radio">
+              <label>
+                <input type="radio" value="create"
+                  checked={this.state.selectedOption === 'create'}
+                  onChange={this.handleOptionChange} />
+                Create Openings
+      </label>
+            </div>
+            <div className="radio">
+              <label>
+                <input type="radio" value="close"
+                  checked={this.state.selectedOption === 'close'}
+                  onChange={this.handleOptionChange} />
+                Close Openings
+      </label>
+            </div>
+            <div className="radio">
+              <label>
+                <input type="radio" value="add"
+                  checked={this.state.selectedOption === 'add'}
+                  onChange={this.handleOptionChange} />
+                Add interviewer
+      </label>
+            </div>
+
           </div>
           <br />
           {containerTag}
-        </div>  
+        </div>
       </div>
     );
   }

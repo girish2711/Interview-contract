@@ -60,8 +60,11 @@ class App extends Component {
         talioInstance = instance
         return talioInstance.readMaxOpenings.call(accounts[0])
       }).then((result) => {
+        this.props.onPositionChangeCallBack(result.c[0]);
         return this.setState({ storageValue: result.c[0] })
-      })
+      }).catch((err)=>{
+        alert("Contract not live !");
+      });
     })
   }
 
@@ -77,12 +80,31 @@ class App extends Component {
     try {
           this.state.web3.eth.getAccounts((error, accounts) => {
             TalioInterview.deployed().then((instance) => {
-              return instance.isTalioOwner.call(accounts[0])
-            }).then((result) => {
-              return this.setState({ storageValue: result.c[0] })
-            })
+
+               instance.isTalioOwner.call({from:accounts[0]}).then((result) => {
+                  console.log("Owner of the contract: " + result);
+
+                  if (result) {
+                      this.setState( {isHomePageForAll:false}, function(){
+                      this.setState({isOwnerPage : true}, function() {            
+                      })
+                    });
+                  } else {
+                    alert("Only authorized accounts can use this feature");
+                  }
+
+                }).catch((err) => { 
+                  console.log("Failed with error: " + err);
+                  alert("This feature available only to owner of Talio");
+
+              });
+
+            }).catch((err) => {
+              alert("Contract not live yet");
+            });
           })
         } catch(err) {
+          console.log("what happened here");
           alert("Only authorized accounts can use this feature");
           console.log(err);
         }
@@ -92,6 +114,7 @@ class App extends Component {
     e.preventDefault();
     this.setState( {isHomePageForAll:false}, function(){
       this.setState({isOwnerPage : true}, function() {
+        this.props.onPositionChangeCallBack(60);
 
       })
     });
