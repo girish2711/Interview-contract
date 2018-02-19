@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import TalioInterviewContract from '../build/contracts/Talio.json'
 import Owner from './Owner/Owner.js'
 import Candidate from './Candidate/Candidate.js'
+import Interviewer from './Interviewer/Interviewer'
 import getWeb3 from './utils/getWeb3'
 
 import './css/oswald.css'
@@ -118,14 +119,20 @@ class App extends Component {
     e.preventDefault();
     this.setState({
       isHomePageForAll : false,
-      isInterviewerPage : true,
-      isCandidatePage : false,
+      isInterviewerPage : false,
+      isCandidatePage : true,
       isOwnerPage : false
      } );
   }
 
   handleInterviewerClick = (e) => {
     e.preventDefault();
+    this.setState({
+      isHomePageForAll : false,
+      isInterviewerPage : true,
+      isCandidatePage : false,
+      isOwnerPage : false
+     } );
   }
 
   render() {
@@ -144,7 +151,8 @@ class App extends Component {
       <div>
         { this.state.isHomePageForAll ? homePageComp : null }
         { this.state.isOwnerPage ? this.renderOwnerPage() : null }
-        {this.state.isInterviewerPage ? this.renderCandidatePage() : null}
+        {this.state.isCandidatePage ? this.renderCandidatePage() : null}
+        {this.state.isInterviewerPage ? this.renderInterviewerPage() : null}
       </div>
     );
   }
@@ -188,6 +196,10 @@ class App extends Component {
 
   renderCandidatePage() {
     return(<Candidate />);
+  }
+
+  renderInterviewerPage() {
+    return(<Interviewer />);
   }
 
 }

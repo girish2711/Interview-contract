@@ -11,51 +11,36 @@ class Candidate extends Component {
             'Java Developer',
             'QA Automation',
         ],
-        jobTitel: '',
-        jobDesc: ''
+        candidateSSN: '',
+        candidateName: '',
+        selectedJob: ''
+
     }
 
-    componentWillMount = () => {
-        this.selectedCheckboxes = new Set();
+    handleCandidateNameChanges = (event) => {
+        this.setState({ candidateName: event.target.value })
+    }
+
+    handleCandidateSSNChanges = (event) => {
+        this.setState({ candidateSSN: event.target.value })
     }
 
 
+    handleRadioGroupSelection = (e) => {
+        console.log(e.target.value)
 
-    handleOptionChange = (e) => {
         this.setState({
-            selectedOption: e.target.value
-        });
+            selectedJob: e.target.value
+        })
 
-    }
-
-    toggleCheckboxChange = (event) => {
-        console.log(event.target.value);
-        if (this.selectedCheckboxes.has(event.target.value)) {
-            this.selectedCheckboxes.delete(event.target.value);
-        } else {
-            this.selectedCheckboxes.add(event.target.value);
-        }
-    }
-
-    handleJobDescriptionChanges = (event) => {
-        this.setState({ jobDesc: event.target.value })
-    }
-
-    handleJobTitleChanges = (event) => {
-        this.setState({ jobTitel: event.target.value })
+        console.log(this.state.selectedJob)
     }
 
 
     handleSubmitClick = event => {
         event.preventDefault();
-        console.log('showOpen = ' + this.state.showOpen);
-        if (!this.state.showOpen) {
-            for (const checkbox of this.selectedCheckboxes) {
-                console.log(checkbox, 'is selected.');
-            }
-        } else {
-            console.log(this.state.jobTitel + "  " + this.state.jobDesc);
-        }
+        console.log('Candidate Info = ' + this.state.candidateName, this.state.candidateSSN, this.state.selectedJob);
+
     }
 
 
@@ -68,15 +53,16 @@ class Candidate extends Component {
                     {this.state.jobtypes.map((item, index) => {
                         return (
                             <Title
-                                name={item}
-                                changed={this.toggleCheckboxChange}
+                                groupName='jobType'
+                                name={item} css='inner-div'
+                                changed={this.handleRadioGroupSelection}
                                 key={item} />
                         )
                     })}
                     <br />
-                    <input className='textBox' type="text" placeholder='Candidate Name' />
+                    <input className='textBox' type="text" placeholder='Candidate Name' onChange={this.handleCandidateNameChanges} />
                     <br />
-                    <input className='textBox' type="text" placeholder='Candidate SSN' />
+                    <input className='textBox' type="text" placeholder='Candidate SSN' onChange={this.handleCandidateSSNChanges} />
                     <br />
                 </div>
                 <button className='buttonStyle' onClick={this.handleSubmitClick}>Apply</button>
