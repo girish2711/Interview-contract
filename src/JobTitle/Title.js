@@ -2,21 +2,21 @@ import React, { Component } from 'react';
 import "./JobTitle.css"
 
 const Title = (props) => {
+
+ 
     return (
+
         <div>
             <label className='inner-div'>
-                <input type="label"
-                    type="checkbox"
+                <input  name="group"
+                    type="radio"
                     className='checkmark'
-                    value={props.name}
+                    value={props.indexValue}
                     key={props.name}
                     onChange={props.changed}
                 />
                 {props.name}
-               <br/>
-
             </label>
-            <br />
         </div>
     )
 }

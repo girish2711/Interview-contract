@@ -11,16 +11,16 @@ import './App.css'
 
 
 class App extends Component {
+
   constructor(props) {
     super(props)
 
     this.state = {
-      storageValue: 0,
       web3: null,
       isHomePageForAll : true,
       isOwnerPage : false,
       isCandidatePage : false,
-      isInterviewerPage : false
+      isInterviewerPage : false,
     }
 
   }
@@ -34,6 +34,7 @@ class App extends Component {
       })
 
       // Instantiate contract once web3 provided.
+  
       this.instantiateContract()
     })
     .catch(() => {
@@ -50,7 +51,7 @@ class App extends Component {
      */
 
     const contract = require('truffle-contract')
-    const  TalioInterview = contract(TalioInterviewContract)
+    const TalioInterview = contract(TalioInterviewContract)
     TalioInterview.setProvider(this.state.web3.currentProvider)
 
     // Declaring this for later so we can chain functions on SimpleStorage.
@@ -62,8 +63,7 @@ class App extends Component {
         talioInstance = instance
         return talioInstance.readMaxOpenings.call(accounts[0])
       }).then((result) => {
-        this.props.onPositionChangeCallBack(result.c[0]);
-        return this.setState({ storageValue: result.c[0] })
+        return this.props.onPositionChangeCallBack(result.c[0]);
       }).catch((err)=>{
         alert("Contract not live !");
       });
@@ -75,7 +75,7 @@ class App extends Component {
     e.preventDefault();
 
     const contract = require('truffle-contract')
-    const  TalioInterview = contract(TalioInterviewContract)
+    const TalioInterview = contract(TalioInterviewContract)
     TalioInterview.setProvider(this.state.web3.currentProvider)
 
 
@@ -112,6 +112,8 @@ class App extends Component {
         }
   }
 
+  
+
   handleCandidateClick = (e) => {
     e.preventDefault();
     this.setState({
@@ -147,10 +149,41 @@ class App extends Component {
     );
   }
 
+  doWeb3Calls = (value) => {
+
+    const contract = require('truffle-contract')
+    const TalioInterview = contract(TalioInterviewContract)
+    TalioInterview.setProvider(this.state.web3.currentProvider)
+    var talioInstance;
+
+    if (value.action === 1) {
+      // Open new position
+
+      this.state.web3.eth.getAccounts((error, accounts) => {
+        TalioInterview.deployed().then((instance) => {
+          talioInstance = instance;
+            return talioInstance.openNewPosition.call(0, {from:accounts[0]});
+        }).then((result) => {
+           console.log(result);
+        }).catch((err) =>{
+          console.log("not working "+err);
+          alert("Failed: Please check permission. Only Talio manager can create openings");
+        });
+      });
+  
+
+    }  else if (value.action == 2) {
+      // Add an interviwer
+
+    } else {
+      // Close a position
+
+    }
+  }
 
 
   renderOwnerPage() {
-    return (<Owner/>);
+    return (<Owner onDappActions={this.doWeb3Calls}/>);
   }
 
   renderCandidatePage() {
