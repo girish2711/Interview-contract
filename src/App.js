@@ -106,7 +106,6 @@ class App extends Component {
             });
           })
         } catch(err) {
-          console.log("what happened here");
           alert("Only authorized accounts can use this feature");
           console.log(err);
         }
@@ -149,6 +148,8 @@ class App extends Component {
     );
   }
 
+  
+
   doWeb3Calls = (value) => {
 
     const contract = require('truffle-contract')
@@ -172,11 +173,34 @@ class App extends Component {
       });
   
 
-    }  else if (value.action == 2) {
+    }  else if (value.action === 2) {
       // Add an interviwer
 
-    } else {
+    } else if (value.action === 3) {
       // Close a position
+
+    } else if (value.action === 4) {
+      // Get open positions
+      this.state.web3.eth.getAccounts((error, accounts) => {
+        TalioInterview.deployed().then((instance) => {
+          talioInstance = instance;
+            return talioInstance.readMaxOpenings.call({from:accounts[0]});
+        }).then((result) => {
+           console.log(result.c[0]);
+           var openPositions = new Map();
+           for(var i = 0; i < result.c[0]; i++) {
+             talioInstance.readJobDetails.call(i,{from:accounts[0]})
+             .then((positions) => {
+              openPositions.set(i,);
+             }).catch((err) => {
+                console.log("")
+             });
+           }
+        }).catch((err) =>{
+          console.log("not working "+err);
+          alert("Failed: Please check permission. Only Talio manager can create openings");
+        });
+      });
 
     }
   }
