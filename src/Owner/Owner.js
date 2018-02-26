@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Title from '../JobTitle/Title';
 import './Owner.css';
-import getWeb3 from '../utils/getWeb3';
 
 class Owner extends Component {
 
@@ -14,7 +13,8 @@ class Owner extends Component {
     ],
     jobTitel: '',
     jobDesc: '',
-    selectedOption: 'create'
+    selectedOption: 'create',
+    interviewer: ''
   }
 
   getInitialState = function () {
@@ -22,8 +22,13 @@ class Owner extends Component {
       selectedOption: 'create',
       selectedCheckboxes: -1
     };
+
   }
 
+  componentWillMount(){
+    console.log("do you know what I am ");
+
+  }
 
 
   handleOptionChange = (e) => {
@@ -41,11 +46,14 @@ class Owner extends Component {
     this.setState({ jobDesc: event.target.value })
   }
 
+  changeInterviewerAddress = (event) => {
+    this.setState({interviewer: event.target.value});
+  }
 
 
   handleOpenPosition = event => {
     //event.preventDefault();
-    if (this.state.selectedOption == 'create') {
+    if (this.state.selectedOption === 'create') {
       if (this.selectedCheckboxes <0) {
         alert("Please select a job type");
       } else {
@@ -63,13 +71,14 @@ class Owner extends Component {
 
   render() {
     let containerTag = null;
-    if (this.state.selectedOption == 'create') {
+    if (this.state.selectedOption === 'create') {
       containerTag = (
 
         <div className='inner-div'>
           {this.state.jobtypes.map((item, index) => {
             return (
               <Title
+                groupName='jobType'
                 name={item}
                 indexValue={index}
                 changed={this.toggleCheckboxChange}
@@ -83,20 +92,29 @@ class Owner extends Component {
 
         </div>
       );
-    } else if (this.state.selectedOption == 'add') {
+    } else if (this.state.selectedOption === 'add') {
+      containerTag = ( <div className='inner-div'>
 
+      <input className='textBox' type="text" placeholder='Interviewer address' onChange={this.changeInterviewerAddress} />
+
+   <br />
+   <br />
+   <button className='buttonStyle' onClick={this.handleSubmitClick}>Submit</button>
+ </div>);
+     
 
     } else { // Close section
 
       containerTag = (
         <div className='inner-div'>
 
-          {this.state.jobtypes.map((item, index) => {
+          {this.props.currentOpenPositions.map((item, index) => {
             return (
               <Title
+                groupName='jobType'
                 name={item}
                 changed={this.toggleCheckboxChange}
-                key={item} />
+                key={index} />
             )
           })}
 

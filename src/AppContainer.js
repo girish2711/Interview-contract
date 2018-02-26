@@ -14,6 +14,8 @@ class AppContainer extends Component {
       }
     }
 
+
+
     currentOpenPositions = (value) => {
         this.setState({openPosition : value}, function(){
 
@@ -21,6 +23,9 @@ class AppContainer extends Component {
       };
   
     render() {
+
+
+
       return (
         <div className="App">
           <nav className="navbar pure-menu pure-menu-horizontal">
@@ -31,7 +36,11 @@ class AppContainer extends Component {
               <div className="pure-u-1-1">
                 <h1>Smart contract example based on ethereum testnetwork!</h1>
                 <h2>Current open positions are <strong>: {this.state.openPosition}</strong></h2>
-                <App  onPositionChangeCallBack={this.currentOpenPositions} />
+                <button
+                     className="buttonStyle"
+                    onClick={this.props.handleBackButton}>Home</button>
+                     <App  onPositionChangeCallBack={this.currentOpenPositions} />
+
               </div>
             </div>
           </main>

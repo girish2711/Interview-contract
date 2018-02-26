@@ -22,6 +22,7 @@ class App extends Component {
       isOwnerPage : false,
       isCandidatePage : false,
       isInterviewerPage : false,
+      openPositions : null
     }
 
   }
@@ -37,6 +38,7 @@ class App extends Component {
       // Instantiate contract once web3 provided.
   
       this.instantiateContract()
+      this.doWeb3Calls({action:4,value:0});
     })
     .catch(() => {
       console.log('Error finding web3.')
@@ -194,14 +196,14 @@ class App extends Component {
           talioInstance = instance;
             return talioInstance.readMaxOpenings.call({from:accounts[0]});
         }).then((result) => {
-           console.log(result.c[0]);
-           var openPositions = new Map();
+           console.log("Current result =" + result.c[0]);
+           this.openPositions = new Array();
            for(var i = 0; i < result.c[0]; i++) {
              talioInstance.readJobDetails.call(i,{from:accounts[0]})
              .then((positions) => {
-              openPositions.set(i,);
+              this.openPositions.push(positions["1"]);
              }).catch((err) => {
-                console.log("")
+                console.log("there is some error")
              });
            }
         }).catch((err) =>{
@@ -215,7 +217,7 @@ class App extends Component {
 
 
   renderOwnerPage() {
-    return (<Owner onDappActions={this.doWeb3Calls}/>);
+    return (<Owner onDappActions={this.doWeb3Calls} currentOpenPositions={this.openPositions}/>);
   }
 
   renderCandidatePage() {
