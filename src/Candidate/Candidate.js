@@ -5,12 +5,6 @@ import './Candidate.css';
 class Candidate extends Component {
 
     state = {
-        jobtypes: [
-            'Android Developer',
-            'iOS Developer',
-            'Java Developer',
-            'QA Automation',
-        ],
         candidateSSN: '',
         candidateName: '',
         selectedJob: ''
@@ -50,13 +44,13 @@ class Candidate extends Component {
                 <h1> Candidate </h1>
                 <div className='inner-div'>
 
-                    {this.state.jobtypes.map((item, index) => {
+                    {this.props.currentOpenPositions.map((item, index) => {
                         return (
                             <Title
                                 groupName='jobType'
                                 name={item} css='inner-div'
                                 changed={this.handleRadioGroupSelection}
-                                key={item} />
+                                key={index} />
                         )
                     })}
                     <br />

@@ -221,7 +221,7 @@ class App extends Component {
   }
 
   renderCandidatePage() {
-    return(<Candidate />);
+    return(<Candidate onDappActions={this.doWeb3Calls} currentOpenPositions={this.openPositions}/>);
   }
 
   renderInterviewerPage() {
