@@ -36,9 +36,9 @@ class AppContainer extends Component {
               <div className="pure-u-1-1">
                 <h1>Smart contract example based on ethereum testnetwork!</h1>
                 <h2>Current open positions are <strong>: {this.state.openPosition}</strong></h2>
-                <button
+                {/* <button
                      className="buttonStyle"
-                    onClick={this.props.handleBackButton}>Home</button>
+                    onClick={this.props.handleBackButton}>Home</button> */}
                      <App  onPositionChangeCallBack={this.currentOpenPositions} />
 
               </div>

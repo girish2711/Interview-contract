@@ -136,6 +136,15 @@ class App extends Component {
      } );
   }
 
+  handleHomButtonClick =(event) => {
+    event.preventDefault();
+    this.setState({
+      isHomePageForAll : true,
+      isInterviewerPage : false,
+      isCandidatePage : false,
+      isOwnerPage : false
+     } );
+  }
   render() {
     var homePageComp = (
       <div>
@@ -148,9 +157,14 @@ class App extends Component {
        </div>
     );
 
+    var homeButton = (
+      <button className='buttonStyle' onClick={this.handleHomButtonClick}>Home</button>
+    );
+
     return (
       <div>
-        { this.state.isHomePageForAll ? homePageComp : null }
+       
+        { this.state.isHomePageForAll ? homePageComp : homeButton }
         { this.state.isOwnerPage ? this.renderOwnerPage() : null }
         {this.state.isCandidatePage ? this.renderCandidatePage() : null}
         {this.state.isInterviewerPage ? this.renderInterviewerPage() : null}
