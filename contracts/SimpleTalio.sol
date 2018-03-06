@@ -142,9 +142,10 @@ contract Talio {
         talioOwner = msg.sender;
     }
     
-    function addInterviewer(address newInterviewer, uint interviewerNumber) public
-    onlyIfTalioOwner()
+    function addInterviewer(address newInterviewer, uint interviewerNumber) 
+    public onlyIfTalioOwner()
     ifInterviewerNumberAvailable(interviewerNumber)
+    returns(uint)
     {
         if (interviewerNumber == interviewers.length)
         {
@@ -154,11 +155,13 @@ contract Talio {
         {
             interviewers[interviewerNumber] = newInterviewer;
         }
+        return interviewerNumber;
     }
 
     
     function openNewPosition(uint8 jobType) 
     public onlyIfTalioOwner
+    returns(uint)
     {
         Opening memory newOpeninng;
         
@@ -167,6 +170,8 @@ contract Talio {
         newOpeninng.numberOfApplicants = 0;
         
         openings.push(newOpeninng);
+        
+        return openings.length;
         
     }
     
@@ -218,6 +223,43 @@ contract Talio {
         return result;
     }
     
+    function closeOpening(uint jobid)
+    public onlyIfTalioOwner()
+    returns(bool)
+    {
+        openings[jobid].isFilled = true;
+        return openings[jobid].isFilled;
+    }
+    
+    function isEligibleInterviewer(address interviewer)
+    public 
+    constant
+    returns(int)
+    {
+         for(uint i=0; i < interviewers.length; i++) {
+              if (interviewers[i] == interviewer) {
+                  return int(i);
+              }
+         }
+         return -1;
+    }
+    
+    function getMaxScheduleCouts(uint jobtype)
+    public
+    constant
+    returns(uint)
+    {
+        return schedules[jobtype].length;
+    }
+    
+    function readSchedule(uint index,uint jobtype)
+    public
+    constant
+    returns(uint jobid, uint ssn)
+    {
+           return(schedules[jobtype][index].jobId,schedules[jobtype][index].ssn);
+    }
+    
     function readMaxOpenings() 
     public
     constant
@@ -229,19 +271,10 @@ contract Talio {
     function readJobDetails(uint jobid)
     public
     constant
-    returns(uint8 jobType, string jobDescription, bool isFilled, uint numberOfApplicants)
+    returns(uint8 jobType, bool isFilled, uint numberOfApplicants, uint jid)
     {
         require(jobid < openings.length);
-        string memory desc = "iOS Developer"; // if job type is 1!
-        if (openings[jobid].jobType == 2) {
-            desc = "Android Developer";
-        } else if (openings[jobid].jobType == 3) {
-            desc = "Java Developer";
-        } else if (openings[jobid].jobType == 4) {
-          desc = "Blockchain Developer";
-        }
-        
-        return(openings[jobid].jobType,desc,openings[jobid].isFilled,openings[jobid].numberOfApplicants);
+        return(openings[jobid].jobType,openings[jobid].isFilled,openings[jobid].numberOfApplicants, jobid);
     }
     
     function isTalioOwner()
@@ -249,6 +282,7 @@ contract Talio {
     constant
     returns(bool)
     {
+        
         return true;
     }
     

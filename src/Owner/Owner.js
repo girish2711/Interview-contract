@@ -11,24 +11,19 @@ class Owner extends Component {
       'Java Lead position',
       'Blockchain Architect',
     ],
+    interviewtypes: [
+      'iOS Interviewer',
+      'Android Interviewer',
+      'Java Interviewer',
+      'Blockchain Interviewer',
+    ],
     jobTitel: '',
     jobDesc: '',
     selectedOption: 'create',
-    interviewer: ''
+    interviewer: '',
+    selectedCheckboxes: "-1"
   }
 
-  getInitialState = function () {
-    return {
-      selectedOption: 'create',
-      selectedCheckboxes: -1
-    };
-
-  }
-
-  componentWillMount(){
-    console.log("do you know what I am ");
-
-  }
 
 
   handleOptionChange = (e) => {
@@ -39,6 +34,8 @@ class Owner extends Component {
   }
 
   toggleCheckboxChange = (event) => {
+    console.log("ava alla = "  + event.target.value);
+
       this.selectedCheckboxes = event.target.value;
   }
 
@@ -54,15 +51,14 @@ class Owner extends Component {
   handleOpenPosition = event => {
     //event.preventDefault();
     if (this.state.selectedOption === 'create') {
-      if (this.selectedCheckboxes <0) {
+      console.log("here => " + this.selectedCheckboxes);
+      if (this.selectedCheckboxes === undefined || this.selectedCheckboxes <0) {
         alert("Please select a job type");
       } else {
-          this.props.onDappActions({action:1,value:0})
+          this.props.onDappActions({action:1,position:this.selectedCheckboxes})
       }
 
     } else {
-      console.log("junk is happenng");
-
       console.log(this.state.jobTitel + "  " + this.state.jobDesc);
     }
   }
@@ -95,19 +91,33 @@ class Owner extends Component {
     } else if (this.state.selectedOption === 'add') {
       containerTag = ( <div className='inner-div'>
 
+       <div className='inner-div'>
+          {this.state.interviewtypes.map((item, index) => {
+            return (
+              <Title
+                groupName='jobType'
+                name={item}
+                indexValue={index}
+                changed={this.toggleCheckboxChange}
+                key={index} />
+            )
+          })}
+          <br />
+
       <input className='textBox' type="text" placeholder='Interviewer address' onChange={this.changeInterviewerAddress} />
 
    <br />
    <br />
+   </div>
    <button className='buttonStyle' onClick={this.handleSubmitClick}>Submit</button>
  </div>);
      
 
-    } else { // Close section
+    } else { 
+      // Close section
 
       containerTag = (
         <div className='inner-div'>
-
           {this.props.currentOpenPositions.map((item, index) => {
             return (
               <Title

@@ -9,8 +9,8 @@ const Title = (props) => {
                 <input  name={props.groupName}
                     type="radio"
                     className='checkmark'
-                    value={props.name}
-                    key={props.name}
+                    value={props.indexValue}
+                    key={props.indexValue}
                     onChange={props.changed}
                 />
                 {props.name}

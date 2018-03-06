@@ -18,7 +18,7 @@ class AppContainer extends Component {
 
     currentOpenPositions = (value) => {
         this.setState({openPosition : value}, function(){
-
+            console.log("New position opened");
         });
       };
   

@@ -37,7 +37,7 @@ class App extends Component {
 
       // Instantiate contract once web3 provided.
   
-      this.instantiateContract()
+      this.instantiateContract();
       this.doWeb3Calls({action:4,value:0});
     })
     .catch(() => {
@@ -181,52 +181,83 @@ class App extends Component {
     TalioInterview.setProvider(this.state.web3.currentProvider)
     var talioInstance;
 
-    if (value.action === 1) {
-      // Open new position
-
       this.state.web3.eth.getAccounts((error, accounts) => {
         TalioInterview.deployed().then((instance) => {
-          talioInstance = instance;
-            return talioInstance.openNewPosition.call(0, {from:accounts[0]});
+           talioInstance = instance;
+
+          if (value.action === 1) {
+            console.log("Position opening = " + parseInt(value.position));
+            return talioInstance.openNewPosition(parseInt(value.position), {from:accounts[0]});
+          } else if (value.action === 2) {
+            // Add an interviwer
+          } else if (value.action === 3) {
+            // Close a position
+          } else if (value.action === 4) {
+            // Get open positions
+            this.openPositions = new Array();
+            return talioInstance.readMaxOpenings.call({from:accounts[0]});
+          } else if (value.action === 5) {
+            // Check if he is an interviewer
+            return talioInstance.readMaxOpenings.call({from:accounts[0]});
+          }
+            
         }).then((result) => {
            console.log(result);
+
+          if (value.action === 1) {
+            talioInstance.readMaxOpenings.call({from:accounts[0]}).then(function(op){
+            //  this.props.onPositionChangeCallBack(result.c[0]);
+            });
+          } else if (value.action === 2) {
+            // Add an interviwer
+          } else if (value.action === 3) {
+            // Close a position
+          } else if (value.action === 4) {
+            // Get open positions
+            for(var i = 0; i < result.c[0]; i++) {
+               talioInstance.readJobDetails.call(i,{from:accounts[0]})
+              .then((positions) => {
+                var jobType = parseInt(positions["0"]);
+                var isPositionOpen = positions["1"];
+
+                if (isPositionOpen === false) {
+                  var jobDescription = "iOS Software engineer";
+                  i = positions["3"];
+                  var jobid = 12001 + parseInt(i);
+
+                  if (jobType === 1) {
+                    jobDescription = "Android Software engineer";
+                  } else if (jobType === 2) {
+                    jobDescription = "Java Lead engineer";
+                  } else if (jobType === 3) {
+                    jobDescription = "Blockchain Architect";
+                  }
+                  this.openPositions.push(jobid + " " + jobDescription);
+                }
+               
+              }).catch((err) => {
+                 console.log("there is some error")
+              });
+            }
+          } else if (value.action == 5) {
+            // Read all open details
+            this.openPositions = new Array();
+            for(var i = 0; i < result.c[0]; i++) {
+              talioInstance.readJobDetails.call(i,{from:accounts[0]})
+              .then((positions) => {
+               this.openPositions.push(positions["1"]);
+              }).catch((err) => {
+                 console.log("Could not read open job positions")
+              });
+            }
+          }
+
         }).catch((err) =>{
-          console.log("not working "+err);
+          console.log("not working "+ err);
           alert("Failed: Please check permission. Only Talio manager can create openings");
         });
       });
-  
 
-    }  else if (value.action === 2) {
-      // Add an interviwer
-
-    } else if (value.action === 3) {
-      // Close a position
-
-    } else if (value.action === 4) {
-      // Get open positions
-      this.state.web3.eth.getAccounts((error, accounts) => {
-        TalioInterview.deployed().then((instance) => {
-          talioInstance = instance;
-            return talioInstance.readMaxOpenings.call({from:accounts[0]});
-        }).then((result) => {
-           console.log("Current result =" + result.c[0]);
-           this.openPositions = new Array();
-           for(var i = 0; i < result.c[0]; i++) {
-             talioInstance.readJobDetails.call(i,{from:accounts[0]})
-             .then((positions) => {
-              this.openPositions.push(positions["1"]);
-             }).catch((err) => {
-                console.log("there is some error")
-             });
-           }
-        }).catch((err) =>{
-          console.log("not working "+err);
-          alert("Failed: Please check permission. Only Talio manager can create openings");
-        });
-      });
-
-    }
   }
 
 

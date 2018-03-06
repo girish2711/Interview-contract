@@ -39,20 +39,28 @@ class Candidate extends Component {
 
 
     render() {
+
+        let positions = null;
+        if (this.props.currentOpenPositions.length > 0) {
+            positions =  this.props.currentOpenPositions.map((item, index) => {
+                return (
+                    <Title
+                        groupName='jobType'
+                        name={item} css='inner-div'
+                        changed={this.handleRadioGroupSelection}
+                        key={index} />
+                )
+            })
+        } else {
+           positions = <h4>There are no open positions</h4>;
+        }
+
         return (
             <div className='Candidate'>
                 <h1> Candidate </h1>
                 <div className='inner-div'>
-
-                    {this.props.currentOpenPositions.map((item, index) => {
-                        return (
-                            <Title
-                                groupName='jobType'
-                                name={item} css='inner-div'
-                                changed={this.handleRadioGroupSelection}
-                                key={index} />
-                        )
-                    })}
+                    {positions}
+                   
                     <br />
                     <input className='textBox' type="text" placeholder='Candidate Name' onChange={this.handleCandidateNameChanges} />
                     <br />
